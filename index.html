@@ -14,6 +14,20 @@
             --box-brown-light-start: #CD853F;
             --box-brown-light-end: #8B4513;
             --font-family: Arial, sans-serif;
+
+            /* Responsive sizes (use clamp to keep values reasonable on very small/large screens) */
+            /* default Mario sprite size (waiting) reduced further to avoid covering UI */
+            --mario-w: clamp(40px, 7.5vw, 80px);
+            --mario-h: clamp(56px, 9.5vw, 110px);
+            --block-size: clamp(48px, 8vw, 88px);
+            --jump-btn-w: clamp(88px, 18vw, 160px);
+            --jump-btn-h: clamp(48px, 10vw, 80px);
+            --logo-w: clamp(140px, 40vw, 340px);
+            --ground-offset: clamp(5%, 5vh, 12%);
+            /* distance from bottom for characters */
+            --jump-height: clamp(80px, 18vh, 160px);
+            /* how high Mario jumps visually */
+            --modal-size: clamp(280px, 44vw, 420px);
         }
 
         * {
@@ -55,20 +69,23 @@
             bottom: 3%;
             left: 50%;
             transform: translateX(-50%);
-            width: 140px;
-            height: 70px;
+            width: var(--jump-btn-w);
+            height: var(--jump-btn-h);
             background-image: url('img/icono.png');
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
             border: none;
             cursor: pointer;
-            transition: transform 0.1s;
+            transition: transform 0.12s;
             z-index: 10;
             -webkit-appearance: none;
             appearance: none;
             background-color: transparent;
             touch-action: manipulation;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .jump-button:hover {
@@ -91,33 +108,49 @@
             background: rgba(255, 255, 255, 0.98);
             border: 4px solid var(--gold);
             border-radius: 12px;
-            padding: 20px 30px;
-            max-width: 600px;
-            width: 90vw;
-            max-height: 60vh;
-            overflow-y: auto;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-            z-index: 10;
+            width: var(--modal-size);
+            height: var(--modal-size);
+            padding: 0;
+            /* inner padding handled in .message-body */
+            overflow: hidden;
+            /* prevent modal from changing size; inner scroll will handle content */
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+            z-index: 12;
             opacity: 0;
-            animation: showMessage 0.3s ease-in-out forwards;
-            font-size: 14px;
+            animation: showMessage 0.22s ease-in-out forwards;
+            font-size: clamp(13px, 2.2vw, 16px);
             line-height: 1.6;
             pointer-events: auto;
         }
 
+        /* Scrollable area inside the square modal */
+        .message .message-body {
+            padding: clamp(12px, 3.2vw, 22px) clamp(14px, 4.5vw, 28px);
+            height: calc(var(--modal-size) - 56px);
+            /* reserve space for header/close if needed */
+            overflow-y: auto;
+        }
+
+        .message h3 {
+            margin: 0 0 10px 0;
+        }
+
+        /* Jump animation uses transform (translateY) so layout doesn't shift and centering is preserved */
         @keyframes jump {
             0% {
-                bottom: 5.5%;
+                transform: translateX(-50%) translateY(0);
             }
 
-            /* El bloque está en top: 65vh, Mario inicia en bottom: 5.5% (aprox 5.5vh), altura de Mario 150px */
-            /* Para que el tope de Mario coincida con el tope del bloque, el salto debe ser a 65vh - 150px (altura Mario) */
-            50% {
-                bottom: calc(38vh - 150px);
+            40% {
+                transform: translateX(-50%) translateY(calc(-1 * var(--jump-height)));
+            }
+
+            60% {
+                transform: translateX(-50%) translateY(calc(-1 * var(--jump-height)));
             }
 
             100% {
-                bottom: 5.5%;
+                transform: translateX(-50%) translateY(0);
             }
         }
 
@@ -126,10 +159,11 @@
             top: 65vh;
             left: 50%;
             transform: translateX(-50%);
-            width: 64px;
-            height: 64px;
+            width: var(--block-size);
+            height: var(--block-size);
             background: url('img/bloque.png') no-repeat center center / contain;
             z-index: 4;
+            pointer-events: none;
         }
 
         .block.hit {
@@ -138,50 +172,48 @@
 
         #mario {
             position: absolute;
-            bottom: 5.5%;
+            bottom: var(--ground-offset);
             left: 50%;
             transform: translateX(-50%);
-            width: 30px;
-            height: 65px;
-            bottom: 10%;
+            width: var(--mario-w);
+            height: var(--mario-h);
             background-image: url('img/Mario-Espera-Photoroom.png');
             background-size: contain;
             background-repeat: no-repeat;
-            background-position: center;
-            transition: bottom 0.3s ease-out, left 0.3s ease-out;
+            background-position: center bottom;
+            transition: transform 0.35s ease-out;
+            /* transform-only to keep things smooth */
             z-index: 5;
             display: block;
-            will-change: bottom, transform;
+            will-change: transform;
         }
 
+        /* Apply jump by adding class; animation alters translateY but keeps translateX(-50%) for centering */
         #mario.jumping {
             animation: jump 0.8s ease-in-out;
             background-image: url('img/Mario-Salta-Photoroom.png');
-            width: 80px;
-            height: 110px;
             display: block;
         }
 
-        /* Reglas responsivas para pantallas pequeñas (ej. 393x852) */
+        /* Small adjustments remain possible via media queries but most sizing uses clamp() vars above */
         @media (max-width: 420px) {
             .message {
                 width: calc(100% - 32px);
                 left: 50%;
                 transform: translateX(-50%);
-                padding: 14px 16px;
-                font-size: 13px;
-                max-height: 70vh;
+                padding: 10px 12px;
+                font-size: clamp(12px, 2.6vw, 14px);
+                max-height: 72vh;
             }
 
+            /* Slightly raise mario on very small screens to avoid overlap with controls */
             #mario {
-                width: 30px;
-                height: 110px;
-                bottom: 4%;
+                bottom: calc(var(--ground-offset) + 1%);
             }
 
             .jump-button {
-                width: 120px;
-                height: 60px;
+                width: var(--jump-btn-w);
+                height: var(--jump-btn-h);
                 bottom: 2.5%;
             }
         }
@@ -205,10 +237,10 @@
             background: var(--accent);
             color: white;
             border: none;
-            width: 35px;
-            height: 35px;
+            width: clamp(28px, 4vw, 44px);
+            height: clamp(28px, 4vw, 44px);
             border-radius: 50%;
-            font-size: 20px;
+            font-size: clamp(16px, 2.6vw, 22px);
             font-weight: bold;
             cursor: pointer;
             transition: background 0.3s, transform 0.2s;
@@ -261,10 +293,10 @@
             background: rgba(240, 221, 9, 0.98);
             border: 4px solid var(--gold);
             border-radius: 50%;
-            padding: 15px;
+            padding: 8px;
             z-index: 3;
-            width: 210px;
-            height: 210px;
+            width: calc(var(--logo-w) + 20px);
+            height: calc(var(--logo-w) + 20px);
             text-align: center;
             display: flex;
             align-items: center;
@@ -272,10 +304,11 @@
         }
 
         .logo-container img {
-            width: 200px;
+            width: var(--logo-w);
             height: auto;
             display: block;
             margin: 0 auto;
+            pointer-events: none;
         }
     </style>
 </head>
@@ -369,9 +402,22 @@
             return messageQueue[currentMessageIndex++];
         }
 
+        // Reusable AudioContext to prevent creating many contexts on repeated clicks
+        let sharedAudioContext = null;
+        function getAudioContext() {
+            if (!sharedAudioContext) {
+                sharedAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            // resume if it was suspended (some browsers require user gesture)
+            if (sharedAudioContext.state === 'suspended') {
+                sharedAudioContext.resume().catch(() => { });
+            }
+            return sharedAudioContext;
+        }
+
         // Sonido de salto original de Mario Bros
         function createJumpSound() {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const audioContext = getAudioContext();
             const oscillator = audioContext.createOscillator();
             const gainNode = audioContext.createGain();
 
@@ -380,18 +426,18 @@
 
             oscillator.type = 'square';
             oscillator.frequency.setValueAtTime(1046, audioContext.currentTime);
-            oscillator.frequency.exponentialRampToValueAtTime(1318, audioContext.currentTime + 0.1);
+            oscillator.frequency.exponentialRampToValueAtTime(1318, audioContext.currentTime + 0.08);
 
             gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.12);
 
             oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 0.15);
+            oscillator.stop(audioContext.currentTime + 0.12);
         }
 
         // Sonido de golpear bloque original de Mario Bros
         function createHitSound() {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const audioContext = getAudioContext();
             const oscillator = audioContext.createOscillator();
             const gainNode = audioContext.createGain();
 
@@ -408,14 +454,17 @@
             }
 
             gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.18);
 
             oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 0.2);
+            oscillator.stop(audioContext.currentTime + 0.18);
         }
 
         // Inicializar cola de mensajes al cargar
         initializeMessageQueue();
+
+        // Jump timing: centralized duration so JS and CSS stay consistent
+        const jumpDuration = 800; // milliseconds (matches CSS animation 0.8s)
 
         jumpBtn.addEventListener('click', function () {
             if (isJumping) return;
@@ -426,14 +475,16 @@
             // Reproducir sonido de salto solo una vez por clic
             createJumpSound();
 
+            // Llamar a hitBlock alrededor del 50% del salto para mejor sincronía
             setTimeout(() => {
                 hitBlock();
-            }, 420); // Ligeramente más tarde para mejor efecto visual
+            }, Math.round(jumpDuration * 0.5));
 
+            // Restaurar estado al terminar la animación
             setTimeout(() => {
                 mario.classList.remove('jumping');
                 isJumping = false;
-            }, 820);
+            }, jumpDuration + 20);
         });
 
         function hitBlock() {
@@ -458,22 +509,57 @@
             const messageDiv = document.createElement('div');
             messageDiv.className = 'message';
 
-            // Ubicar el modal arriba del bloque, sin taparlo
-            const blockRect = block.getBoundingClientRect();
-            // El modal se ubicará 20px arriba del bloque
-            let top = blockRect.top - (window.innerHeight * 0.6) - 20;
-            if (top < 10) top = 10;
-            messageDiv.style.top = top + 'px';
-
-            let contentHTML = '<h3>' + messageData.title + '</h3><ul';
+            // Build inner scrollable body
+            const body = document.createElement('div');
+            body.className = 'message-body';
+            let contentHTML = '<h3>' + messageData.title + '</h3><ul>';
             messageData.content.forEach(item => {
                 contentHTML += '<li>' + item + '</li>';
             });
             contentHTML += '</ul>';
             contentHTML += '<button class="close-btn" onclick="closeMessage()">✕</button>';
+            body.innerHTML = contentHTML;
+            messageDiv.appendChild(body);
 
-            messageDiv.innerHTML = contentHTML;
+            // Append and measure
             document.getElementById('gameContainer').appendChild(messageDiv);
+            const modalRect = messageDiv.getBoundingClientRect();
+            const logo = document.querySelector('.logo-container');
+            const logoRect = logo ? logo.getBoundingClientRect() : null;
+
+            // Start centered over logo or center screen
+            let top = logoRect
+                ? logoRect.top + (logoRect.height / 2) - (modalRect.height / 2)
+                : Math.max(10, (window.innerHeight - modalRect.height) / 2);
+            top = Math.max(10, Math.min(top, window.innerHeight - modalRect.height - 10));
+
+            // Avoid overlapping jump button and block by shifting if needed
+            const jumpRect = jumpBtn.getBoundingClientRect();
+            const blockRect = block.getBoundingClientRect();
+
+            function rectsOverlap(r1, r2) {
+                return !(r1.right < r2.left || r1.left > r2.right || r1.bottom < r2.top || r1.top > r2.bottom);
+            }
+
+            let attempts = 0;
+            while (attempts < 6) {
+                attempts++;
+                const futureRect = { top: top, bottom: top + modalRect.height, left: modalRect.left, right: modalRect.right };
+                if (rectsOverlap(futureRect, jumpRect) || rectsOverlap(futureRect, blockRect)) {
+                    const move = Math.max(12, Math.round(window.innerHeight * 0.05));
+                    if (top - move >= 10) {
+                        top -= move;
+                    } else if (top + move + modalRect.height <= window.innerHeight - 10) {
+                        top += move;
+                    } else {
+                        break;
+                    }
+                } else {
+                    break;
+                }
+            }
+
+            messageDiv.style.top = top + 'px';
             currentMessage = messageDiv;
         }
 
