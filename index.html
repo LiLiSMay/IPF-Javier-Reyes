@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 
@@ -24,8 +23,8 @@
             --jump-btn-w: clamp(88px, 18vw, 160px);
             --jump-btn-h: clamp(48px, 10vw, 80px);
             --logo-w: clamp(140px, 40vw, 340px);
-            --ground-offset: clamp(5%, 5vh, 12%);
-            /* distance from bottom for characters */
+            --ground-offset: clamp(80px, 12vh, 140px);
+            /* increased minimum distance from bottom for better mobile compatibility */
             --jump-height: clamp(80px, 18vh, 160px);
             /* how high Mario jumps visually */
             --modal-size: clamp(280px, 44vw, 420px);
@@ -207,9 +206,9 @@
                 max-height: 72vh;
             }
 
-            /* Slightly raise mario on very small screens to avoid overlap with controls */
+            /* Increase Mario's distance from bottom on mobile to avoid button overlap */
             #mario {
-                bottom: calc(var(--ground-offset) + 1%);
+                bottom: calc(var(--ground-offset) + max(40px, 8vh));
             }
 
             .jump-button {
