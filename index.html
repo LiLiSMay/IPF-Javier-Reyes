@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -65,8 +66,8 @@
         }
 
         .jump-button {
-            position: absolute;
-            bottom: 3%;
+            position: fixed;
+            bottom: max(16px, 3vh);
             left: 50%;
             transform: translateX(-50%);
             width: var(--jump-btn-w);
@@ -214,7 +215,7 @@
             .jump-button {
                 width: var(--jump-btn-w);
                 height: var(--jump-btn-h);
-                bottom: 2.5%;
+                bottom: max(12px, 2.5vh);
             }
         }
 
