@@ -66,7 +66,7 @@
 
         .jump-button {
             position: fixed;
-            bottom: max(16px, 3vh);
+            bottom: max(12px, 2vh);
             left: 50%;
             transform: translateX(-50%);
             width: var(--jump-btn-w);
@@ -171,8 +171,8 @@
         }
 
         #mario {
-            position: absolute;
-            bottom: var(--ground-offset);
+            position: fixed;
+            bottom: calc(max(12px, 2vh) + var(--jump-btn-h) + 2px);
             left: 50%;
             transform: translateX(-50%);
             width: var(--mario-w);
@@ -206,15 +206,15 @@
                 max-height: 72vh;
             }
 
-            /* Increase Mario's distance from bottom on mobile to avoid button overlap */
+            /* Mobile adjustments for consistent spacing */
             #mario {
-                bottom: calc(var(--ground-offset) + max(40px, 8vh));
+                bottom: calc(max(8px, 1.5vh) + var(--jump-btn-h) + 2px);
             }
 
             .jump-button {
                 width: var(--jump-btn-w);
                 height: var(--jump-btn-h);
-                bottom: max(12px, 2.5vh);
+                bottom: max(8px, 1.5vh);
             }
         }
 
