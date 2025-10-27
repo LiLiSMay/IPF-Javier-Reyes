@@ -78,7 +78,7 @@
             border: none;
             cursor: pointer;
             transition: transform 0.12s;
-            z-index: 10;
+            z-index: 5;
             -webkit-appearance: none;
             appearance: none;
             background-color: transparent;
@@ -183,7 +183,7 @@
             background-position: center bottom;
             transition: transform 0.35s ease-out;
             /* transform-only to keep things smooth */
-            z-index: 5;
+            z-index: 10;
             display: block;
             will-change: transform;
         }
@@ -208,13 +208,15 @@
 
             /* Mobile adjustments for consistent spacing */
             #mario {
-                bottom: calc(max(8px, 1.5vh) + var(--jump-btn-h) + 2px);
+                bottom: calc(max(16px, 3vh) + var(--jump-btn-h) + 2px);
+                z-index: 10;
             }
 
             .jump-button {
                 width: var(--jump-btn-w);
                 height: var(--jump-btn-h);
-                bottom: max(8px, 1.5vh);
+                bottom: max(16px, 3vh);
+                z-index: 5;
             }
         }
 
@@ -310,6 +312,53 @@
             margin: 0 auto;
             pointer-events: none;
         }
+
+        .social-links {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 15;
+        }
+
+        .social-link {
+            width: clamp(44px, 8vw, 56px);
+            height: clamp(44px, 8vw, 56px);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .social-link:hover {
+            transform: scale(1.1);
+        }
+
+        .social-link img {
+            width: 60%;
+            height: 60%;
+            object-fit: contain;
+        }
+
+        .whatsapp-link {
+            background: #25D366;
+            ;
+        }
+
+        .telegram-link {
+            background: #0088cc;
+        }
+
+        @media (max-width: 420px) {
+            .social-links {
+                right: 10px;
+                bottom: 15px;
+            }
+        }
     </style>
 </head>
 
@@ -317,6 +366,19 @@
     <div id="gameContainer">
         <div class="logo-container">
             <img src="img/Sigla.png" alt="Logo">
+        </div>
+
+        <div class="social-links">
+            <a href="https://chat.whatsapp.com/HJxC8RhlBuB1DezavtFWUq?mode=wwt" target="_blank"
+                class="social-link whatsapp-link" aria-label="Contactar por WhatsApp">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/1200px-WhatsApp.svg.png"
+                    alt="WhatsApp">
+            </a>
+            <a href="https://t.me/+Y56rqrnfJAdiNzYx" target="_blank" class="social-link telegram-link"
+                aria-label="Contactar por Telegram">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/2048px-Telegram_logo.svg.png"
+                    alt="Telegram">
+            </a>
         </div>
 
         <div class="block" id="block"></div>
